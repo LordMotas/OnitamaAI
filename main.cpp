@@ -46,7 +46,7 @@ int main() {
 	for (int i = 0; i < 5; i++) {
 		printHeader();
 		if (i < 2)
-			std::cout << "What cards does the Minimax AI have?" << std::endl;
+			std::cout << "What cards does the AI have?" << std::endl;
 		else if (i < 4)
 			std::cout << "What cards do you have?" << std::endl;
 		else
@@ -72,7 +72,6 @@ int main() {
 	}
 
 	//Play against the computer
-	if (choice == 2) {
 	tryAgain:
 		printHeader();
 		std::cout << "Select a difficulty setting:" << std::endl;
@@ -80,7 +79,6 @@ int main() {
 		std::cout << "2) Medium (Smart)" << std::endl;
 		std::cout << "3) Hard (Minimax)" << std::endl;
 		std::cin >> choice;
-	}
 	switch (choice) {
 		//Completely random
 	case 1:
