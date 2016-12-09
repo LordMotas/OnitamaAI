@@ -34,7 +34,7 @@ public:
 	//Printing methods
 	void static printHeader();
 	void static printPlayerCards(Player);
-	void printAll();
+	void printAll(bool);
 
 	//Determines the first player
 	bool determineFirstPlayer();
