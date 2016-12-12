@@ -19,8 +19,9 @@ Game gameCopy;
 
 int main() {
 	int choice;
-	std::ofstream file;
-	file.open("output.txt");
+	std::ofstream file1, file2;
+	file1.open("winData.txt");
+	file2.open("heatmapData.txt");
 	CardsList cardsList = CardsList();
 	//Board board;
 	printHeader();
@@ -42,23 +43,17 @@ int main() {
 	case 3:
 		break;
 	}
-	printHeader();
-ownGame:
-	char ownGame;
-	std::cout << "Do you own the game? (y/n): ";
-	std::cin >> ownGame;
-	if (ownGame == 'y' || ownGame == 'Y') {
-		//Initialize the AI and player
-		for (int i = 0; i < 5; i++) {
-			printHeader();
-			if (i < 2)
-				std::cout << "What cards does the AI have?" << std::endl;
-			else if (i < 4)
-				std::cout << "What cards do you have?" << std::endl;
-			else
-				std::cout << "What is the middle card?" << std::endl;
-			Card cardToUse = cardsList.chooseFromList();
-			switch (i) {
+	//Initialize the AI and player
+	for (int i = 0; i < 5; i++) {
+		printHeader();
+		if (i < 2)
+			std::cout << "What cards does the AI have?" << std::endl;
+		else if (i < 4)
+			std::cout << "What cards do you have?" << std::endl;
+		else
+			std::cout << "What is the middle card?" << std::endl;
+		Card cardToUse = cardsList.chooseFromList();
+		switch (i) {
 			case 0:
 				game.player2.hand.first = cardToUse;
 				break;
@@ -74,45 +69,9 @@ ownGame:
 			case 4:
 				game.GameBoard.middleCard = cardToUse;
 				break;
-			}
 		}
 	}
-	else if (ownGame == 'n' || ownGame == 'N') {
-		//Do random
-		int number;
-		std::random_device rd;
-		std::mt19937 mt(rd());
-		std::uniform_int_distribution<int> firstPlayerFirstRandomCard(0, cardsList.cardsList.size() - 1);
-		number = firstPlayerFirstRandomCard(mt);
-		game.player1.hand.first = cardsList.cardsList[number];
-		cardsList.cardsList.erase(cardsList.cardsList.begin() + number);
 
-		std::uniform_int_distribution<int> firstPlayerSecondRandomCard(0, cardsList.cardsList.size() - 1);
-		number = firstPlayerSecondRandomCard(mt);
-		game.player1.hand.second = cardsList.cardsList[number];
-		cardsList.cardsList.erase(cardsList.cardsList.begin() + number);
-
-		std::uniform_int_distribution<int> secondPlayerFirstRandomCard(0, cardsList.cardsList.size() - 1);
-		number = secondPlayerFirstRandomCard(mt);
-		game.player2.hand.first = cardsList.cardsList[number];
-		cardsList.cardsList.erase(cardsList.cardsList.begin() + number);
-
-		std::uniform_int_distribution<int> secondPlayerSecondRandomCard(0, cardsList.cardsList.size() - 1);
-		number = secondPlayerSecondRandomCard(mt);
-		game.player2.hand.second = cardsList.cardsList[number];
-		cardsList.cardsList.erase(cardsList.cardsList.begin() + number);
-
-		std::uniform_int_distribution<int> middleRandomCard(0, cardsList.cardsList.size() - 1);
-		number = middleRandomCard(mt);
-		game.GameBoard.middleCard = cardsList.cardsList[number];
-		cardsList.cardsList.erase(cardsList.cardsList.begin() + number);
-	}
-	else {
-		system("cls");
-		printHeader();
-		std::cout << "Invaid input! Try Again!" << std::endl;
-		goto ownGame;
-	}
 	//Play against the computer
 	tryAgain:
 		printHeader();
@@ -146,11 +105,11 @@ ownGame:
 		break;
 	}
 aiTrial:
-	file << "AIWins, OpponentWins, Level, Draws, Depth, Heuristic, AvgMoves, StdDev" << std::endl;
+	file1 << "AIWins, OpponentWins, Level, Draws, Depth, Heuristic, AvgMoves, StdDev" << std::endl;
 	int numRounds = 100;
 	game.player2.level = 3;
-	//For increasing depth from 1 - 4
-	for (int k = 1; k <= 4; k++) {
+	//For increasing depth from 1 - 7
+	for (int k = 1; k <= 7; k++) {
 		game.player2.depth = k;
 		//Perform each set 5 times
 		for(int l = 1; l <= 5; l++) {
@@ -225,19 +184,19 @@ aiTrial:
 			}
 		}
 	}
-	file.close();
+	file1.close();
 	system("Pause");
 	return 0;
 minimaxTrial:
-	file << "AIWins, OpponentWins, Draws, AI(2)Depth, AI(2)Heuristic, AI(1)Depth, AI(1)Heuristic, AverageMoves, StdDev" << std::endl;
+	file2 << "AIWins, OpponentWins, Draws, AI(2)Depth, AI(2)Heuristic, AI(1)Depth, AI(1)Heuristic, AverageMoves, StdDev" << std::endl;
 	numRounds = 100;
 	game.player2.level = 3;
 	game.player1.level = 3;
-	//For increasing depth from 1 - 4
-	for (int k = 1; k <= 4; k++) {
+	//For increasing depth from 1 - 7
+	for (int k = 1; k <= 7; k++) {
 		game.player2.depth = k;
-		//For increasing depth from 1 - 4
-		for (int i = 1; i <= 4; i++) {
+		//For increasing depth from 1 - 7
+		for (int i = 1; i <= 7; i++) {
 			game.player1.depth = i;
 			//For each heuristic function 1 -2 
 			for (int j = 1; j <= 2; j++) {
@@ -299,7 +258,7 @@ minimaxTrial:
 						stdDev += pow(moves[l] - average, 2);
 					}
 					stdDev = stdDev / 100;
-					file << aiWins << "," << opponentWins << "," << draws << "," << k << "," << n << "," << i << "," << j << "," << average << "," << stdDev << std::endl;
+					file2 << aiWins << "," << opponentWins << "," << draws << "," << i << "," << n << "," << k << "," << j << "," << average << "," << stdDev << std::endl;
 					aiWins = 0;
 					opponentWins = 0;
 					draws = 0;
@@ -309,7 +268,7 @@ minimaxTrial:
 			}
 		}
 	}
-	file.close();
+	file2.close();
 	system("Pause");
 	return 0;
 }
