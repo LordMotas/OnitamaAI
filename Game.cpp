@@ -19,7 +19,7 @@ void Game::startGame()
 		printHeader();
 		if (player)//Blue (Player/AI)
 		{
-			printAll();
+			printAll(player);
 			std::string choice;
 			//If Player 1 is AI instead of human
 			if (player1.level != 0) {
@@ -28,7 +28,7 @@ void Game::startGame()
 
 				//Swap cards with the middle
 				GameBoard.movePiece(logicResult.first);
-				printAll(); 
+				printAll(player);
 				GameBoard.playCard(player1, logicResult.second);
 			}
 			else {
@@ -41,27 +41,27 @@ void Game::startGame()
 				if (GameBoard.validateInput(choice, playerMoves)) {
 					GameBoard.movePiece(choice);
 					//Swap cards with the middle
-					printAll();
+					printAll(player);
 					GameBoard.playCard(player1);
 				}
 				else {
 					system("cls");
-					printAll();
+					printAll(player);
 					std::cout << "Invalid Input! Try Again!" << std::endl;
 					goto tryAgain;
 				}
 			}
-			printAll();
+			printAll(player);
 		}
 		else {//Red (AI)
 			//Get the string that is used by the AI
-			printAll();
+			printAll(player);
 			std::pair<std::string, Card> logicResult = AIlogic(player2.hand, player1.hand, 1);
 
 			//Swap cards with the middle
 			GameBoard.movePiece(logicResult.first);
 			GameBoard.playCard(player2, logicResult.second);
-			printAll();
+			printAll(player);
 		}
 		moves++;
 		//This will check for victory conditions and finish the game if there is one
@@ -99,7 +99,7 @@ void Game::startGame()
 		}
 	}
 Victory:
-	printAll();
+	printAll(player);
 	std::cout << "Game Over" << std::endl;
 	if (fiftyMoveRule == 50) {
 		std::cout << "The game is a draw!" << std::endl;
@@ -121,7 +121,6 @@ void Game::printHeader()
 	std::cout << "=======================" << std::endl;
 	std::cout << "  O  N  I  T  A  M  A  " << std::endl;
 	std::cout << "=======================" << std::endl;
-	std::cout << std::endl;
 }
 
 void Game::printPlayerCards(Player player)
@@ -138,9 +137,13 @@ void Game::printPlayerCards(Player player)
 	std::cout << std::endl;
 }
 
-void Game::printAll()
+void Game::printAll(bool player)
 {
 	printHeader();
+	if (player)
+		std::cout << "Blue's Turn" << std::endl;
+	else
+		std::cout << "Red's Turn" << std::endl;
 	std::cout << "(x, y) -> (1, -1) = move right 1, then move down 1" << std::endl << std::endl;
 	printPlayerCards(player1);
 	GameBoard.printBoard();
